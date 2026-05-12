@@ -97,6 +97,18 @@ CREATE TABLE IF NOT EXISTS owner_balance (
   last_updated TIMESTAMP DEFAULT NOW()
 );
 
+-- Token claims
+CREATE TABLE IF NOT EXISTS token_claims (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id) NOT NULL,
+  tokens_claimed DOUBLE PRECISION NOT NULL,
+  points_spent BIGINT NOT NULL,
+  tx_signature VARCHAR(128),
+  wallet_address VARCHAR(64) NOT NULL,
+  status VARCHAR(20) DEFAULT 'completed',
+  claimed_at TIMESTAMP DEFAULT NOW()
+);
+
 -- Indexes
 CREATE INDEX IF NOT EXISTS idx_users_points ON users(total_points DESC);
 CREATE INDEX IF NOT EXISTS idx_users_referral ON users(referral_code);
@@ -104,6 +116,8 @@ CREATE INDEX IF NOT EXISTS idx_submissions_user ON task_submissions(user_id);
 CREATE INDEX IF NOT EXISTS idx_sessions_user ON mining_sessions(user_id);
 CREATE INDEX IF NOT EXISTS idx_owner_fees_wallet ON owner_fees(owner_wallet);
 CREATE INDEX IF NOT EXISTS idx_owner_fees_created ON owner_fees(created_at);
+CREATE INDEX IF NOT EXISTS idx_token_claims_user ON token_claims(user_id);
+CREATE INDEX IF NOT EXISTS idx_token_claims_tx ON token_claims(tx_signature);
 `;
 
 async function migrate() {

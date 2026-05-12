@@ -9,6 +9,7 @@ const minerRoutes = require('./routes/miner');
 const leaderboardRoutes = require('./routes/leaderboard');
 const referralRoutes = require('./routes/referral');
 const ownerRoutes = require('./routes/owner');
+const claimRoutes = require('./routes/claim');
 const db = require('./db');
 
 async function start() {
@@ -35,6 +36,7 @@ async function start() {
   await fastify.register(leaderboardRoutes, { prefix: '/api/leaderboard' });
   await fastify.register(referralRoutes, { prefix: '/api/referral' });
   await fastify.register(ownerRoutes, { prefix: '/api/owner' });
+  await fastify.register(claimRoutes, { prefix: '/api/claim' });
 
   // Health
   fastify.get('/health', async () => ({ status: 'ok', version: '0.1.0', name: 'PROTON' }));
