@@ -1,0 +1,27 @@
+{
+  "name": "@proton/backend",
+  "version": "0.1.0",
+  "description": "PROTON Mining Platform - Backend API",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "migrate": "node src/db/migrate.js",
+    "seed": "node src/db/seed.js"
+  },
+  "dependencies": {
+    "fastify": "^4.28.0",
+    "@fastify/cors": "^9.0.1",
+    "@fastify/jwt": "^8.0.0",
+    "@fastify/redis": "^6.2.0",
+    "@fastify/websocket": "^10.0.1",
+    "pg": "^8.12.0",
+    "bcrypt": "^5.1.1",
+    "bullmq": "^5.12.0",
+    "nanoid": "^3.3.7",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}

@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --proton-primary: #00f0ff;
+  --proton-secondary: #9945ff;
+}
+
+body {
+  background: #050508;
+  color: #e0e0e0;
+}
+
+.glass {
+  background: rgba(17, 17, 24, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 240, 255, 0.1);
+}
+
+.neon-text {
+  text-shadow: 0 0 10px var(--proton-primary), 0 0 20px var(--proton-primary);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #00f0ff, #9945ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+target/
+dist/
+.next/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Build
+build/
+out/
+
+# Database
+*.db
+data/
+
+# Rust
+/miner/target/
+
+# Docker
+docker-data/
