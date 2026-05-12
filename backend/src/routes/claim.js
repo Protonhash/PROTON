@@ -2,10 +2,10 @@ const { Connection, Keypair, PublicKey, Transaction } = require('@solana/web3.js
 const { getOrCreateAssociatedTokenAccount, createTransferInstruction, getMint } = require('@solana/spl-token');
 const bs58 = require('bs58');
 
-// Config
-const CLAIM_RATE = () => parseInt(process.env.CLAIM_RATE) || 1000; // points per 1 token
-const CLAIM_MIN = () => parseInt(process.env.CLAIM_MIN_POINTS) || 100;
-const CLAIM_COOLDOWN_MS = () => parseInt(process.env.CLAIM_COOLDOWN_MS) || 3600000; // 1 hour
+// Config — harder claim rate = more grind = more engagement
+const CLAIM_RATE = () => parseInt(process.env.CLAIM_RATE) || 5000; // 5000 points per 1 token (grindable)
+const CLAIM_MIN = () => parseInt(process.env.CLAIM_MIN_POINTS) || 500; // min 500 points to even check
+const CLAIM_COOLDOWN_MS = () => parseInt(process.env.CLAIM_COOLDOWN_MS) || 7200000; // 2 hour cooldown
 
 async function claimRoutes(fastify, options) {
 
