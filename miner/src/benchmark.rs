@@ -127,9 +127,9 @@ fn bench_vector() -> u64 {
 
 fn bench_memory() -> u64 {
     let start = Instant::now();
-    let size = 1_000_000;
+    let size: usize = 1_000_000;
 
-    let mut data: Vec<u64> = (0..size).collect();
+    let mut data: Vec<u64> = (0..size as u64).collect();
     for i in 0..size - 1 {
         data[i] = data[i].wrapping_add(data[i + 1]);
     }

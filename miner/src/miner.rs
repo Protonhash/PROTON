@@ -1,12 +1,12 @@
 use colored::*;
-use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
+use indicatif::{ProgressBar, ProgressStyle};
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 use tokio::time::sleep;
 
 use crate::config::load_config;
-use crate::tasks::{execute_task, Task, TaskResult};
+use crate::tasks::{execute_task, Task};
 
 static TASKS_COMPLETED: AtomicU64 = AtomicU64::new(0);
 static POINTS_EARNED: AtomicU64 = AtomicU64::new(0);
@@ -38,8 +38,7 @@ pub async fn start_mining(threads: Option<usize>, gpu: bool) {
     println!("  {} Press Ctrl+C to stop", "ℹ".dimmed());
     println!();
 
-    let mp = MultiProgress::new();
-    let spinner = mp.add(ProgressBar::new_spinner());
+    let spinner = ProgressBar::new_spinner();
     spinner.set_style(
         ProgressStyle::default_spinner()
             .template("  {spinner:.cyan} {msg}")

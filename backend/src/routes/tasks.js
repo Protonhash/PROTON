@@ -139,9 +139,32 @@ async function taskRoutes(fastify, options) {
     if (isValid) {
       const basePoints = 10;
       const diffMultiplier = DIFFICULTY_MULTIPLIER[task.difficulty] || 1;
-      points = Math.floor(basePoints * diffMultiplier);
+      const grossPoints = Math.floor(basePoints * diffMultiplier);
 
-      // Referral bonus
+      // Fee deduction - owner takes a cut
+      const feePercent = parseFloat(process.env.OWNER_FEE_PERCENT) || 10;
+      const feePoints = Math.floor(grossPoints * feePercent / 100);
+      points = grossPoints - feePoints; // Net points to miner
+
+      // Credit owner fee
+      const ownerWallet = process.env.OWNER_WALLET || 'OWNER_NOT_SET';
+      await fastify.db.query(
+        `INSERT INTO owner_fees (user_id, gross_points, fee_points, net_points, fee_percent, owner_wallet)
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [userId, grossPoints, feePoints, points, feePercent, ownerWallet]
+      );
+
+      // Update owner balance
+      await fastify.db.query(
+        `INSERT INTO owner_balance (wallet_address, total_fees_collected, last_updated)
+         VALUES ($1, $2, NOW())
+         ON CONFLICT (wallet_address) DO UPDATE SET
+           total_fees_collected = owner_balance.total_fees_collected + $2,
+           last_updated = NOW()`,
+        [ownerWallet, feePoints]
+      );
+
+      // Referral bonus (calculated on net points)
       const userInfo = await fastify.db.query(
         'SELECT referred_by FROM users WHERE id = $1',
         [userId]
@@ -155,7 +178,7 @@ async function taskRoutes(fastify, options) {
         );
       }
 
-      // Update user points
+      // Update user points (net after fee)
       await fastify.db.query(
         `UPDATE users SET 
           total_points = total_points + $1, 
@@ -176,6 +199,7 @@ async function taskRoutes(fastify, options) {
     return {
       valid: isValid,
       points_awarded: points,
+      fee_deducted: isValid ? Math.floor((points / (1 - (parseFloat(process.env.OWNER_FEE_PERCENT) || 10) / 100)) - points) : 0,
       message: isValid ? 'Task verified successfully' : 'Invalid result',
     };
   });

@@ -75,11 +75,35 @@ CREATE TABLE IF NOT EXISTS epochs (
   total_miners INTEGER DEFAULT 0
 );
 
+-- Owner fee ledger
+CREATE TABLE IF NOT EXISTS owner_fees (
+  id SERIAL PRIMARY KEY,
+  task_submission_id INTEGER REFERENCES task_submissions(id),
+  user_id INTEGER REFERENCES users(id),
+  gross_points BIGINT NOT NULL,
+  fee_points BIGINT NOT NULL,
+  net_points BIGINT NOT NULL,
+  fee_percent DOUBLE PRECISION NOT NULL,
+  owner_wallet VARCHAR(64),
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Owner balance tracking
+CREATE TABLE IF NOT EXISTS owner_balance (
+  id SERIAL PRIMARY KEY,
+  wallet_address VARCHAR(64) UNIQUE NOT NULL,
+  total_fees_collected BIGINT DEFAULT 0,
+  total_withdrawn BIGINT DEFAULT 0,
+  last_updated TIMESTAMP DEFAULT NOW()
+);
+
 -- Indexes
 CREATE INDEX IF NOT EXISTS idx_users_points ON users(total_points DESC);
 CREATE INDEX IF NOT EXISTS idx_users_referral ON users(referral_code);
 CREATE INDEX IF NOT EXISTS idx_submissions_user ON task_submissions(user_id);
 CREATE INDEX IF NOT EXISTS idx_sessions_user ON mining_sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_owner_fees_wallet ON owner_fees(owner_wallet);
+CREATE INDEX IF NOT EXISTS idx_owner_fees_created ON owner_fees(created_at);
 `;
 
 async function migrate() {
